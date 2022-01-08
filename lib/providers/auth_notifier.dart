@@ -10,6 +10,9 @@ class AuthNotifier with ChangeNotifier {
   final _network = Network();
 
   ShoppieUser? shoppieUser;
+  int counter = 0;
+
+  void increment() => {counter++, notifyListeners()};
 
   void checkCurrentUser(BuildContext context) async {
     try {

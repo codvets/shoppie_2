@@ -17,6 +17,10 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: context.read<AuthNotifier>().increment,
+        child: Icon(Icons.add),
+      ),
       backgroundColor: Colors.grey[350],
       body: SafeArea(
         child: Stack(
@@ -24,6 +28,7 @@ class Home extends StatelessWidget {
             SingleChildScrollView(
               child: Column(
                 children: [
+                  Text(context.watch<AuthNotifier>().counter.toString()),
                   SizedBox(
                     // color: Colors.red,
 

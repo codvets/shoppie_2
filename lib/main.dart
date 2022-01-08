@@ -14,14 +14,11 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        Provider(
+        ChangeNotifierProvider<AuthNotifier>(
           create: (context) => AuthNotifier(),
         ),
-        Provider(
+        ChangeNotifierProvider<HomeNotifier>(
           create: (context) => HomeNotifier(),
-        ),
-        Provider(
-          create: (context) => SellerProvider(),
         ),
       ],
       child: const ShopApp(),
