@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shoppie/models/product.dart';
 
 import 'package:shoppie/providers/auth_notifier.dart';
 import 'package:shoppie/providers/home_notifier.dart';
 import 'package:shoppie/utils/screen_utils.dart';
 import 'package:shoppie/widgets/bottom_navbar.dart';
+import 'package:shoppie/widgets/category_builder.dart';
 import 'package:shoppie/widgets/category_item.dart';
+import 'package:shoppie/widgets/grid_container.dart';
 import 'package:shoppie/widgets/search_bar.dart';
 
 class Home extends StatelessWidget {
@@ -161,6 +164,29 @@ class Home extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: ScreenUtils.screenHeight(context) * 0.5,
+                    child: FutureBuilder<List<Product>>(
+                      future: Provider.of<HomeNotifier>(context, listen: false)
+                          .getAllProducts(),
+                      builder:
+                          (context, AsyncSnapshot<List<Product>> snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.none:
+                            return Text("No Internet Connection");
+                          case ConnectionState.waiting:
+                            return Center(child: CircularProgressIndicator());
+                          case ConnectionState.active:
+                            return SizedBox();
+                          case ConnectionState.done:
+                            final data = snapshot.data!;
+
+                            return CategoryBuilder(items: data);
+                        }
+                      },
+                    ),
+                  ),
+
                   // SizedBox(
                   //   // color: Colors.blue,
                   //   height: ScreenUtils.screenHeight(context) * 0.5,

@@ -23,7 +23,7 @@ class Seller extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                // Navigator.of(context).pushNamed(Routes.productEntry);
+                Navigator.of(context).pushNamed(Routes.productEntry);
               },
               child: Text(
                 "Product Entry",

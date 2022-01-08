@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shoppie/app/shop_app.dart';
 import 'package:shoppie/providers/auth_notifier.dart';
 import 'package:shoppie/providers/home_notifier.dart';
+import 'package:shoppie/providers/seller_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +19,10 @@ void main() async {
         ),
         Provider(
           create: (context) => HomeNotifier(),
-        )
+        ),
+        Provider(
+          create: (context) => SellerProvider(),
+        ),
       ],
       child: const ShopApp(),
     ),

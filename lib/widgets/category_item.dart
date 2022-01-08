@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shoppie/providers/home_notifier.dart';
-import 'package:shoppie/screens/buyer/home.dart';
 import 'package:shoppie/utils/screen_utils.dart';
 
 class CategoryItem extends StatelessWidget {

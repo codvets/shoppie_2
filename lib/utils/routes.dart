@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shoppie/screens/buyer/home.dart';
 import 'package:shoppie/screens/login.dart';
+import 'package:shoppie/screens/seller/product_entry.dart';
 import 'package:shoppie/screens/seller/seller_home.dart';
 import 'package:shoppie/screens/seller/seller_profile.dart';
 import 'package:shoppie/screens/signup_screen.dart';
@@ -13,6 +14,7 @@ class Routes {
   static const String signUp = '/signUp';
   static const String sellerHome = '/seller_home';
   static const String sellerProfile = '/seller_profile';
+  static const String productEntry = '/product_entry';
 
   static Map<String, Widget Function(BuildContext)> routes = {
     home: (context) => Home(),
@@ -21,5 +23,6 @@ class Routes {
     signUp: (context) => SignUp(),
     sellerHome: (context) => Seller(),
     sellerProfile: (context) => SellerProfile(),
+    productEntry: (context) => ProductEntry()
   };
 }

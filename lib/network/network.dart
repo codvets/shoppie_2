@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:shoppie/models/product.dart';
 import 'package:shoppie/models/shoppie_user.dart';
 import 'package:path/path.dart';
 
@@ -21,7 +22,7 @@ class Network {
 
       final doc =
           await firestore.collection("users").doc(currentUser!.uid).get();
-      return ShoppieUser.fromJson(doc.data()!);
+      return ShoppieUser.fromJson(doc.data()!, currentUser.uid);
     } on FirebaseAuthException catch (e, s) {
       throw e;
     }
@@ -38,7 +39,7 @@ class Network {
           .get();
       final data = document.data()!;
 
-      return ShoppieUser.fromJson(data);
+      return ShoppieUser.fromJson(data, document.id);
     } on FirebaseAuthException catch (error, stk) {
       log("An error occured while signing in: ${error.message}");
       throw error;
@@ -60,10 +61,12 @@ class Network {
 
       await firestore.collection("users").doc(user!.uid).set({
         "name": name,
+        "uid": user.uid,
         "email": email,
         "type": "buyer",
       });
-      return ShoppieUser(name: name, email: email, type: UserType.buyer);
+      return ShoppieUser(
+          name: name, email: email, type: UserType.buyer, uid: user.uid);
     } on FirebaseException catch (error, stk) {
       log("Error occured while signing up: ${error.message}");
       throw error;
@@ -78,8 +81,10 @@ class Network {
     4. Delete - delete()
   */
 
-  void updateProfile(String name, File image) async {
-    String imageUrl = await uploadImage(image);
+  Future<void> updateProfile(String name, File image) async {
+    final imagename = basename(image.path);
+    String imageUrl = await uploadImage(
+        image: image, reference: "profileImages/$currentUserId/$imagename");
 
     await firestore.collection("users").doc(currentUserId).update({
       "name": name,
@@ -87,14 +92,40 @@ class Network {
     });
   }
 
-  Future<String> uploadImage(File image) async {
-    final imageName = basename(image.path);
+  Future<String> uploadImage(
+      {required File image, required String reference}) async {
 //haroon.png
 
-    final task = await storage.ref("profileImages/$imageName").putFile(image);
+    final task = await storage.ref(reference).putFile(image);
 
     final String url = await task.ref.getDownloadURL();
 
     return url;
+  }
+
+  Future<void> uploadProduct(Product product, File productImage) async {
+    final id = DateTime.now().microsecondsSinceEpoch.toString();
+    product.id = id;
+    final productImageUrl = await uploadImage(
+        image: productImage,
+        reference: "products/${product.sellerId}/${product.id}");
+    product.image = productImageUrl;
+    await firestore.collection("products").doc(id).set(product.toJson());
+  }
+
+  Future<List<Product>> getAllProducts() async {
+    final documents = await firestore.collection("products").get();
+
+    List<Product> products = List.empty(growable: true);
+
+    for (final doc in documents.docs) {
+      final data = doc.data();
+
+      final product = Product.fromJson(data);
+
+      products.add(product);
+    }
+
+    return products;
   }
 }
